@@ -1,0 +1,35 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    # Specifies the runner environment; uses the latest Ubuntu version
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository so the job can access it
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Example step: Install a software package
+      - name: Install julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.12'
+          arch: 'default'
+          show-versioninfo: 'false'
+          project: '.'
+
+      # Example step: Run a command using the Ubuntu runner's shell
+      - name: Run a build script
+        run: |
+          julia -e 'using Pkg; Pkg.add("Oxygen")'
+
+      # Example step: Run tests
+      - name: Serve
+        run: julia app.jl
