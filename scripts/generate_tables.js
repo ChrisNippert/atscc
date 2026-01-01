@@ -2,16 +2,14 @@
  * Generates the tables for each year of records for the archives.html page.
  */
 
-const tablesDiv = document.getElementById("tables-div")
-
-sortedData.years.forEach(k => {
+function createTable(tablesDiv, year) {
     // Create year results title
     let title = document.createElement("h1")
     title.classList.add("h1", "p-2")
-    title.innerHTML = k + " Results"
+    title.innerHTML = year + " Results"
     tablesDiv.appendChild(title)
     
-    let yearData = sortedData[k]
+    let yearData = sortedData[year]
 
     // Create base table with caption
     let table = document.createElement("table")
@@ -67,5 +65,5 @@ sortedData.years.forEach(k => {
         table.appendChild(tbody)
     }
 
-    tablesDiv.appendChild(table)
-})
+    tablesDiv.appendChild(table)    
+}

@@ -62,6 +62,12 @@
 
     <!-- Generate tables -->
     <script src="./scripts/generate_tables.js"></script>
+    <script>
+        const tablesDiv = document.getElementById("tables-div")
+        sortedData.years.reverse().forEach(k => {
+            createTable(tablesDiv, k)
+        })
+    </script>
 </body>
 
 </html>
