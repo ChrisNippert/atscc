@@ -6,7 +6,7 @@
 const allData = {
     "2019": {
         "data": {
-            "Abdul \"Pump Flex\"": {
+            "Abdul 'Pump Flex'": {
                 "cuts": [
                     2.18
                 ]

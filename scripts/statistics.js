@@ -24,17 +24,12 @@ else {
 
     const years = sortedData.years.filter(year => sortedData[year].participants.includes(requestedPerson))
 
-    // Sorted list of [year, cut] by thinneess
-    const bestCuts = years.filter(year => sortedData[year].data)
-                            .map(year => [year, sortedData[year].data[requestedPerson].bestCut])
-                            .filter(pair => pair[1])
-                            .sort((a, b) => a[1] - b[1])
-    // Sorted list of [year, cut] by thinneess
-    const worstCuts = years.filter(year => sortedData[year].data)
-                            .map(year => [year, Math.max(...sortedData[year].data[requestedPerson].cutsNumeric)])
-                            .filter(pair => pair[1])
-                            .sort((a, b) => b[1] - a[1])
-    console.log(bestCuts, worstCuts)
+    // Get all valid cuts with their years [cut, year] by thinness for this person
+    const allCuts = years.filter(year => sortedData[year].data)
+                            .flatMap(year => sortedData[year].data[requestedPerson].cutsNumeric.map(c => [c, year]))
+                            .sort((a, b) => a[0] - b[0])
+
+    console.log(allCuts)
 
     pageDiv.innerHTML += `    
     <div class="row text-blob">
@@ -47,12 +42,12 @@ else {
         <div class="col-sm-6">
             <h3>Personal Best:</h3>
             <p class="h4">
-                ${bestCuts[0][1]} mm (${bestCuts[0][0]})
+                ${allCuts.length > 0 ? `${allCuts[0][0]} mm (${allCuts[0][1]})` : `-`}
             </p>
             <br/>
             <h3>Personal Worst:</h3>
             <p class="h4">
-                ${worstCuts[0][1]} mm (${worstCuts[0][0]})
+                ${allCuts.length > 0 ? `${allCuts.at(-1)[0]} mm (${allCuts.at(-1)[1]})` : `-`}
             </p>
         </div>
     </div>
