@@ -281,6 +281,9 @@ sortedData.years.forEach(year => {
     sortedData[year].participants = (sortedData[year].standings ?? Object.keys(sortedData[year].data)).toSorted()
 })
 
+// Save off unique set of participants (alphabetically sorted)
+sortedData.participants = [... new Set(sortedData.years.flatMap(year => sortedData[year].participants))].sort()
+
 // Do preprocessing for each year with cuts data
 sortedData.years.forEach(year => {
     if (sortedData[year].data) {
@@ -296,3 +299,7 @@ sortedData.years.forEach(year => {
             sortedData[year].standings = sortedData[year].participants.toSorted((a, b) => sortedData[year].data[a].bestCut - sortedData[year].data[b].bestCut)
     }
 })
+
+
+// TODO remove
+console.log(sortedData)

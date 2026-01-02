@@ -25,6 +25,9 @@
 
     <!-- import index.css -->
     <link rel="stylesheet" href="index.css">
+    
+    <!--Import data-->
+    <script src="./scripts/data.js"></script>
 </head>
 
 <body>
@@ -42,31 +45,32 @@
                 <li class="nav-item">
                     <a class="nav-link" href="archives.html">Archives</a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Resources</a>
-                </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="resources.html">Resources</a>
+                </li>
+                <li class="nav-item active">
                     <a class="nav-link" href="statistics.html">Statistics</a>
                 </li>
             </ul>
         </div>
     </nav>
-    <div class="container text-center">
-        <div class="jumbotron h1">Resources</div>
-        <div class="text-blob text-center">
-            <ul class="list-group m-2 p-2">
-                <li class="list-group-item"><a
-                        href="https://www.hickoryfarms.com/meat-cheese/meat/turkey-summer-sausage/sweet-and-smoky-turkey-summer-sausage-003136.html">Sausage</a>
-                    <img src="images/sausage.jpg" alt="sausage" width="300" height="300">
-                </li>
-                </li>
-                <li class="list-group-item"><a href="#">
-                        Knife
-                    </a>
-                </li>
-            </ul>
+    <div class="container text-center" id="page">
+        <div class="jumbotron">
+            <h1 id="statsTitle">Statistics</h1>
         </div>
+        
+        <!-- <div class="row text-blob text"></div> -->
     </div>
+
+    <!-- Generate tables -->
+    <script src="./scripts/generate_tables.js"></script>
+    <script src="./scripts/statistics.js"></script>
+    <!-- <script>
+        const tablesDiv = document.getElementById("tables-div")
+        sortedData.years.reverse().forEach(k => {
+            createTable(tablesDiv, k)
+        })
+    </script> -->
 </body>
 
 </html>

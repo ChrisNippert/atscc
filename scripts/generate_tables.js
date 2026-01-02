@@ -31,11 +31,11 @@ function createTable(tablesDiv, year) {
         table.appendChild(thead)
 
         let tbody = document.createElement("tbody")
-        yearData.standings.forEach((rank, i) => {
+        yearData.standings.forEach((person, i) => {
             tbody.innerHTML += `
                     <tr>
                         <th scope="row">${i + 1}</th>
-                        <td>${rank}</td>
+                        <td><a class="nav-link" href="statistics.html?person=${person}">${person}</a></td>
                     </tr>`
         })
         table.appendChild(tbody)
@@ -58,7 +58,7 @@ function createTable(tablesDiv, year) {
             tbody.innerHTML += `
                     <tr>
                         <th scope="row">${i + 1}</th>
-                        <td>${person}</td>
+                        <td><a class="nav-link" href="statistics.html?person=${person}">${person}</a></td>
                         ${yearData.data[person].cuts.map((cut) => `<td>${cut == yearData.data[person].bestCut ? `<strong>${cut}</strong>` : cut}</td>`).join("\n")}
                     </tr>`
         })
