@@ -266,6 +266,11 @@ const allData = {
 }
 
 
+// Some basic statistics functions
+const mean = xs => xs.reduce((a,b) => a + b, 0) / (xs.length || 1);
+const median = xs => xs.length === 0 ? NaN : xs.toSorted()[Math.floor(xs.length / 2)];
+const min  = xs => xs.reduce((a,b) => Math.min(a,b), Infinity);
+const max  = xs => xs.reduce((a,b) => Math.max(a,b), -Infinity);
 
 /*
  * Do some data preprocessing.
@@ -300,6 +305,36 @@ sortedData.years.forEach(year => {
     }
 })
 
+// Build a flat list of all rows of data for easier processing
+function buildRows(data) {
+    const rows = [];
+    if (!data) return rows;
 
-// TODO remove
-console.log(sortedData)
+    for (const [year, yearDict] of Object.entries(data)) {
+        const dataDict = yearDict.data;
+        if (!yearDict.data) continue; // If no data, skip
+
+        for (const [person, personDict] of Object.entries(dataDict)) {
+            for (const [cuts, cutsList] of Object.entries(personDict)) {
+                for (let i = 0; i < cutsList.length; i++) {
+                    const width = cutsList[i];
+
+                    if (typeof width !== "number" || Number.isNaN(width)) continue; // Skip for cuts that aren't a number
+
+                    rows.push({
+                        Year: String(year),
+                        Person: String(person),
+                        Round: i + 1,
+                        Width: width,
+                    });
+                }
+            }
+        }
+    }
+    return rows;
+}
+
+rows = buildRows(allData);
+// Example of usage:
+// chris_rows = rows.filter(row => row.Person === "Chris");
+// chris_widths = chris_rows.map(row => row.Width);
