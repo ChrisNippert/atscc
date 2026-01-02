@@ -4,7 +4,6 @@
 
 const urlParams = new URLSearchParams(window.location.search)
 const requestedPerson = urlParams.get("person")
-console.log(requestedPerson) // TODO remove
 
 const pageDiv = document.getElementById("page")
 
@@ -23,12 +22,9 @@ else {
 
     const years = sortedData.years.filter(year => sortedData[year].participants.includes(requestedPerson))
 
-    // Get all valid cuts with their years [cut, year] by thinness for this person
-    const allCuts = years.filter(year => sortedData[year].data)
-                            .flatMap(year => sortedData[year].data[requestedPerson].cutsNumeric.map(c => [c, year]))
-                            .sort((a, b) => a[0] - b[0]) // TODO add to preprocessing, do for all users
-
-    console.log(allCuts) // TODO remove
+    // Get all valid cuts by thinness for this person
+    const allCuts = sortedData.allRows.filter(o => o.person === requestedPerson)
+    const allValidCuts = allCuts.filter(o => o.isNumeric)
 
     pageDiv.innerHTML += `    
     <div class="row text-blob">
@@ -41,12 +37,12 @@ else {
         <div class="col-sm-6">
             <h3>Personal Best:</h3>
             <p class="h4">
-                ${allCuts.length > 0 ? `${allCuts[0][0]} mm (${allCuts[0][1]})` : `-`}
+                ${allValidCuts.length > 0 ? `${allValidCuts[0].cut} mm (${allValidCuts[0].year})` : `-`}
             </p>
             <br/>
             <h3>Personal Worst:</h3>
             <p class="h4">
-                ${allCuts.length > 0 ? `${allCuts.at(-1)[0]} mm (${allCuts.at(-1)[1]})` : `-`}
+                ${allValidCuts.length > 0 ? `${allValidCuts.at(-1).cut} mm (${allValidCuts.at(-1).year})` : `-`}
             </p>
         </div>
     </div>
@@ -67,14 +63,14 @@ else {
             showYAxis: false,
         })
         calculator.setMathBounds({
-            left: allCuts[0][0] - 2,
-            right: allCuts.at(-1)[0] + 2,
+            left: allValidCuts[0].cut - 2,
+            right: allValidCuts.at(-1).cut + 2,
             bottom: -1,
             top: 3
         })
         calculator.setDefaultState(calculator.getState());
         // Send points to Desmos for boxplot
-        calculator.setExpression({ id: 'list', latex: `L=[${allCuts.map(pair => pair[0]).join()}]` })
+        calculator.setExpression({ id: 'list', latex: `L=[${allValidCuts.map(o => o.cut).join()}]` })
         calculator.setExpression({ 
             id: 'boxplot', 
             latex: '\\boxplot(L)'
@@ -85,11 +81,11 @@ else {
             columns: [
             {
                 latex: 'x',
-                values: allCuts.map(pair => pair[0])
+                values: allValidCuts.map(o => o.cut)
             },
             {
                 latex: 'y',
-                values: allCuts.map(x => 1)
+                values: allValidCuts.map(x => 1)
             }]
         })
 

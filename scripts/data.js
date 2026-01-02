@@ -306,6 +306,13 @@ sortedData.years.forEach(year => {
 })
 
 // Build a flat list of all rows of data for easier processing
+sortedData.allRows = sortedData.years
+    .filter(year => sortedData[year].data)
+    .flatMap(year => sortedData[year].participants.map(person => ({year: year, person: person})))
+    .flatMap(obj => sortedData[obj.year].data[obj.person].cuts.map((c, n) => ({... obj, round: n + 1, cut: c, isNumeric: typeof c === "number"})))
+    .sort((a, b) => (a.isNumeric ? a.cut : 100) - (b.isNumeric ? b.cut : 100))
+
+// Build a flat list of all rows of data for easier processing
 function buildRows(data) {
     const rows = [];
     if (!data) return rows;
