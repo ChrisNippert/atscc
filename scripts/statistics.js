@@ -71,7 +71,7 @@ else {
         });
 
         CONTAINER = document.createElement('div')
-        CONTAINER.className = 'col'
+        CONTAINER.className = 'container'
         pageDiv.appendChild(CONTAINER)
 
         PLOTS = document.createElement('div')
@@ -79,11 +79,11 @@ else {
         CONTAINER.appendChild(PLOTS);
 
         PLOTLY_BAR = document.createElement('div');
-        PLOTS.className = 'col'
+        PLOTLY_BAR.classList.add('col', 'plotBox')
         PLOTS.appendChild(PLOTLY_BAR);
 
         PLOTLY_CUTS = document.createElement('div');
-        PLOTS.className = 'col'
+        PLOTLY_CUTS.classList.add('col', 'plotBox')
         PLOTS.appendChild(PLOTLY_CUTS);
 
         Plotly.newPlot(PLOTLY_BAR, [... traces], {
@@ -101,7 +101,9 @@ else {
                 }
             },
             showlegend: false,
-        });
+            autosize: true,
+        },
+        {responsive: true});
 
         ///////////////////////////
         // PlotlyJS Min/Max/Mean //
@@ -165,6 +167,55 @@ else {
                 }
             },
             showlegend: false,
-        });
+            autosize: true,
+        },
+        {responsive: true});
+
+        
+        ///////////////////////////////////
+        // PlotlyJS Bar Chart of Failure //
+        ///////////////////////////////////
+        PLOTS2 = document.createElement('div')
+        PLOTS2.className = 'row'
+        CONTAINER.appendChild(PLOTS2);
+
+        successes = allCuts.filter(o => o.isNumeric).length
+        failures = allCuts.length - successes
+
+        var data = [
+            {
+                x: ['Successes', 'Disqualifications'],
+                y: [successes, failures],
+                type: 'bar',
+                marker: {
+                    color: ['rgba(38, 138, 38, 0.7)', 'rgba(255, 0, 0, 0.7)']
+                }
+            }
+        ]
+
+        BAR_GRAPH = document.createElement('div');
+        BAR_GRAPH.classList.add('col', 'plotBox')
+        PLOTS2.appendChild(BAR_GRAPH);
+
+        Plotly.newPlot(BAR_GRAPH, data,
+        {
+            title: {
+                text: `Bar Chart of Failure`,
+            },
+            yaxis: {
+                title: {
+                    text: 'Number of Rounds',
+                }
+            },
+            xaxis: {
+                title: {
+                    text: 'Outcome',
+                }
+            },
+            autosize: true,
+        },
+        {responsive: true});
+
+        
     }
 }

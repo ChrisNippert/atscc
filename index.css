@@ -13,3 +13,5 @@ body{
 #calculator {
     height: 400px;
 }
+.col { flex: 1; min-width: 0; }               /* min-width:0 prevents overflow */
+.plotBox { height: 420px; width: 100%; }      /* choose a height you like */
