@@ -52,7 +52,11 @@
         </div>
     </nav>
     <div class="container text-center">
-        <div class="jumbotron h1">5th Annual Turkey Sausage Cutting Competition</div>
+        <div class="jumbotron h1" id="title">th Annual Turkey Sausage Cutting Competition</div>
+        <script>
+            const title = document.getElementById("title")
+            title.innerHTML = (sortedData.years.at(-1) - 2016) + title.innerHTML // I'm not handling st/nd/rd :)
+        </script>
         <div class="row text-blob">
             <div class="col-sm-6">
                 <h3 class="h3">History</h3>
