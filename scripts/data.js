@@ -311,37 +311,3 @@ sortedData.allRows = sortedData.years
     .flatMap(year => sortedData[year].participants.map(person => ({year: year, person: person})))
     .flatMap(obj => sortedData[obj.year].data[obj.person].cuts.map((c, n) => ({... obj, round: n + 1, cut: c, isNumeric: typeof c === "number"})))
     .sort((a, b) => (a.isNumeric ? a.cut : 100) - (b.isNumeric ? b.cut : 100))
-
-// Build a flat list of all rows of data for easier processing
-function buildRows(data) {
-    const rows = [];
-    if (!data) return rows;
-
-    for (const [year, yearDict] of Object.entries(data)) {
-        const dataDict = yearDict.data;
-        if (!yearDict.data) continue; // If no data, skip
-
-        for (const [person, personDict] of Object.entries(dataDict)) {
-            for (const [cuts, cutsList] of Object.entries(personDict)) {
-                for (let i = 0; i < cutsList.length; i++) {
-                    const width = cutsList[i];
-
-                    if (typeof width !== "number" || Number.isNaN(width)) continue; // Skip for cuts that aren't a number
-
-                    rows.push({
-                        Year: String(year),
-                        Person: String(person),
-                        Round: i + 1,
-                        Width: width,
-                    });
-                }
-            }
-        }
-    }
-    return rows;
-}
-
-rows = buildRows(allData);
-// Example of usage:
-// chris_rows = rows.filter(row => row.Person === "Chris");
-// chris_widths = chris_rows.map(row => row.Width);

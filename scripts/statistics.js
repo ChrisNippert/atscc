@@ -49,46 +49,122 @@ else {
     `
 
     if (allCuts.length > 0) {
-        // Setup Desmos
-        pageDiv.innerHTML += `<div class="row text-blob" id="calculator"></div>`
-        var elt = document.getElementById('calculator')
-        var calculator = Desmos.GraphingCalculator(elt)
-        calculator.updateSettings({ 
-            xAxisLabel: 'Cut Width (mm)',
-            // expressions: false,
-            expressionsCollapsed: true,
-            settingsMenu: false,
-            keypad: false,
-            showResetButtonOnGraphpaper: false,
-            showYAxis: false,
-        })
-        calculator.setMathBounds({
-            left: allValidCuts[0].cut - 2,
-            right: allValidCuts.at(-1).cut + 2,
-            bottom: -1,
-            top: 3
-        })
-        calculator.setDefaultState(calculator.getState());
-        // Send points to Desmos for boxplot
-        calculator.setExpression({ id: 'list', latex: `L=[${allValidCuts.map(o => o.cut).join()}]` })
-        calculator.setExpression({ 
-            id: 'boxplot', 
-            latex: '\\boxplot(L)'
-        })
-        calculator.setExpression({
-            id: 'points',
-            type: 'table',
-            columns: [
-            {
-                latex: 'x',
-                values: allValidCuts.map(o => o.cut)
+        ///////////////////////
+        // PlotlyJS Box PLot //
+        ///////////////////////
+        person_rows = sortedData.allRows.filter(row => row.person === requestedPerson).filter(row => row.isNumeric);
+        year_data = years.map(year => {
+            cuts = person_rows.filter(row => row.year === year).map(row => row.cut);
+            return {
+                year: year,
+                cuts: cuts,
+            };
+        });
+
+        // for each year make a trace
+        traces = year_data.map(yd => {
+            return {
+                y: yd.cuts,
+                type: 'box',
+                name: yd.year,
+            };
+        });
+
+        CONTAINER = document.createElement('div')
+        CONTAINER.className = 'col'
+        pageDiv.appendChild(CONTAINER)
+
+        PLOTS = document.createElement('div')
+        PLOTS.className = 'row'
+        CONTAINER.appendChild(PLOTS);
+
+        PLOTLY_BAR = document.createElement('div');
+        PLOTS.className = 'col'
+        PLOTS.appendChild(PLOTLY_BAR);
+
+        PLOTLY_CUTS = document.createElement('div');
+        PLOTS.className = 'col'
+        PLOTS.appendChild(PLOTLY_CUTS);
+
+        Plotly.newPlot(PLOTLY_BAR, [... traces], {
+            title: {
+                text: `Cut widths per Year for ${requestedPerson}`,
             },
-            {
-                latex: 'y',
-                values: allValidCuts.map(x => 1)
-            }]
-        })
+            yaxis: {
+                title: {
+                    text: 'Cut Width (mm)',
+                }
+            },
+            xaxis: {
+                title: {
+                    text: 'Year',
+                }
+            },
+            showlegend: false,
+        });
+
+        ///////////////////////////
+        // PlotlyJS Min/Max/Mean //
+        ///////////////////////////
+        // make a trace for min, max, mean
+        min_trace = {
+            x: year_data.map(yd => yd.year),
+            y: year_data.map(yd => Math.min(... yd.cuts)),
+            mode: 'lines',
+            connectgaps: true,
+            name: 'Best Cut per Year',
+            line: {
+                width: 0,
+                color: 'green',
+            }
+        }
+
+        max_trace = {
+            x: year_data.map(yd => yd.year),
+            y: year_data.map(yd => Math.max(... yd.cuts)),
+            mode: 'lines',
+            connectgaps: true,
+            fill: 'tonexty', // Fills the area between upper and lower
+            fillcolor: 'rgba(103, 197, 90, 0.3)',
+            name: 'Worst Cut per Year',
+            line: {
+                // shape: 'spline', // This would make lines curved but it doesn't really work with this level of data
+                width: 0,
+                color: 'green',
+            }
+        }
+
+        mean_trace = {
+            x: year_data.map(yd => yd.year),
+            y: year_data.map(yd => {
+                const sum = yd.cuts.reduce((a, b) => a + b, 0);
+                return sum / yd.cuts.length;
+            }),
+            mode: 'lines',
+            name: 'Average Cut per Year',
+            connectgaps: true,
+            line: {
+                width: 2,
+                color: 'green',
+            }
+        }
 
 
+        Plotly.newPlot(PLOTLY_CUTS, [min_trace, max_trace, mean_trace], {
+            title: {
+                text: `Cut widths per Year for ${requestedPerson}`,
+            },
+            yaxis: {
+                title: {
+                    text: 'Cut Width (mm)',
+                }
+            },
+            xaxis: {
+                title: {
+                    text: 'Year',
+                }
+            },
+            showlegend: false,
+        });
     }
 }
