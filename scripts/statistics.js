@@ -14,8 +14,7 @@ if (!requestedPerson || !sortedData.participants.includes(requestedPerson)) {
     <div class="text-blob container text-center">
         <p class="h5">Select a person to view the stats of:</p>
         ${sortedData.participants.map(person => `<a class="nav-link" href="statistics.html?person=${person}">${person}</a>`).join("\n")}
-    </div>
-    `
+    </div>`
 }
 // Display statistics for given person 
 else {
@@ -27,9 +26,9 @@ else {
     // Get all valid cuts with their years [cut, year] by thinness for this person
     const allCuts = years.filter(year => sortedData[year].data)
                             .flatMap(year => sortedData[year].data[requestedPerson].cutsNumeric.map(c => [c, year]))
-                            .sort((a, b) => a[0] - b[0])
+                            .sort((a, b) => a[0] - b[0]) // TODO add to preprocessing, do for all users
 
-    console.log(allCuts)
+    console.log(allCuts) // TODO remove
 
     pageDiv.innerHTML += `    
     <div class="row text-blob">
@@ -52,4 +51,48 @@ else {
         </div>
     </div>
     `
+
+    if (allCuts.length > 0) {
+        // Setup Desmos
+        pageDiv.innerHTML += `<div class="row text-blob" id="calculator"></div>`
+        var elt = document.getElementById('calculator')
+        var calculator = Desmos.GraphingCalculator(elt)
+        calculator.updateSettings({ 
+            xAxisLabel: 'Cut Width (mm)',
+            // expressions: false,
+            expressionsCollapsed: true,
+            settingsMenu: false,
+            keypad: false,
+            showResetButtonOnGraphpaper: false,
+            showYAxis: false,
+        })
+        calculator.setMathBounds({
+            left: allCuts[0][0] - 2,
+            right: allCuts.at(-1)[0] + 2,
+            bottom: -1,
+            top: 3
+        })
+        calculator.setDefaultState(calculator.getState());
+        // Send points to Desmos for boxplot
+        calculator.setExpression({ id: 'list', latex: `L=[${allCuts.map(pair => pair[0]).join()}]` })
+        calculator.setExpression({ 
+            id: 'boxplot', 
+            latex: '\\boxplot(L)'
+        })
+        calculator.setExpression({
+            id: 'points',
+            type: 'table',
+            columns: [
+            {
+                latex: 'x',
+                values: allCuts.map(pair => pair[0])
+            },
+            {
+                latex: 'y',
+                values: allCuts.map(x => 1)
+            }]
+        })
+
+
+    }
 }
