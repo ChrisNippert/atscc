@@ -10,9 +10,15 @@ const pageDiv = document.getElementById("page")
 // Check if person from url is valid, display valid errors
 if (!requestedPerson || !sortedData.participants.includes(requestedPerson)) {
     pageDiv.innerHTML += `
-    <div class="text-blob container text-center">
-        <p class="h5">Select a person to view the stats of:</p>
-        ${sortedData.participants.map(person => `<a class="nav-link" href="statistics.html?person=${person}">${person}</a>`).join("\n")}
+    <div class="row text-blob">
+        <div class="col-sm-6 container text-center">
+            <p class="h5">Select a person to view the stats of:</p>
+            ${sortedData.participants.map(person => `<a class="nav-link" href="statistics.html?person=${person}">${person}</a>`).join("\n")}
+        </div>
+        <div class="col-sm-6 container text-center">
+            <p class="h5">Select a year to view the stats of:</p>
+            ${sortedData.years.map(year => `<a class="nav-link" href="statistics_year.html?year=${year}">${year}</a>`).join("\n")}
+        </div>
     </div>`
 }
 // Display statistics for given person 
@@ -26,7 +32,7 @@ else {
     const allCuts = sortedData.allRows.filter(o => o.person === requestedPerson)
     const allValidCuts = allCuts.filter(o => o.isNumeric)
 
-    pageDiv.innerHTML += `    
+    pageDiv.innerHTML += `
     <div class="row text-blob">
         <div class="col-sm-6">
             <h3>Years Competed:</h3>
