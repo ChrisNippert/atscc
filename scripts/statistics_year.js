@@ -55,6 +55,7 @@ else {
             },
         };
         Plotly.newPlot('myDiv', data, layout, {
+            responsive: true,
             displayModeBar: false,
             scrollZoom: false
         });

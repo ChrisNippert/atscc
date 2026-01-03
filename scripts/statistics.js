@@ -70,7 +70,7 @@ else {
         // for each year make a trace
         traces = year_data.map(yd => {
             return {
-                y: yd.cuts,
+                x: yd.cuts,
                 type: 'box',
                 name: yd.year,
             };
@@ -94,22 +94,29 @@ else {
 
         Plotly.newPlot(PLOTLY_BAR, [... traces], {
             title: {
-                text: `Cut widths per Year for ${requestedPerson}`,
+                text: `Cut Widths per Year for ${requestedPerson}`,
             },
             yaxis: {
                 title: {
-                    text: 'Cut Width (mm)',
-                }
+                    text: 'Year',
+                },
+                dtick: 1,
+                fixedrange: true
             },
             xaxis: {
                 title: {
-                    text: 'Year',
-                }
+                    text: 'Cut Width (mm)',
+                },
+                fixedrange: true
             },
             showlegend: false,
             autosize: true,
         },
-        {responsive: true});
+        {
+            responsive: true,
+            displayModeBar: false,
+            scrollZoom: false
+        });
 
         ///////////////////////////
         // PlotlyJS Min/Max/Mean //
@@ -160,22 +167,29 @@ else {
 
         Plotly.newPlot(PLOTLY_CUTS, [min_trace, max_trace, mean_trace], {
             title: {
-                text: `Cut widths per Year for ${requestedPerson}`,
+                text: `Cut Widths per Year for ${requestedPerson}`,
             },
             yaxis: {
                 title: {
                     text: 'Cut Width (mm)',
-                }
+                },
+                fixedrange: true
             },
             xaxis: {
                 title: {
                     text: 'Year',
-                }
+                },
+                dtick: 1,
+                fixedrange: true
             },
             showlegend: false,
             autosize: true,
         },
-        {responsive: true});
+        {
+            responsive: true,
+            displayModeBar: false,
+            scrollZoom: false
+        });
 
         
         ///////////////////////////////////
@@ -211,16 +225,23 @@ else {
             yaxis: {
                 title: {
                     text: 'Number of Rounds',
-                }
+                },
+                dtick: 1,
+                fixedrange: true
             },
             xaxis: {
                 title: {
                     text: 'Outcome',
-                }
+                },
+                fixedrange: true
             },
             autosize: true,
         },
-        {responsive: true});
+        {
+            responsive: true,
+            displayModeBar: false,
+            scrollZoom: false
+        });
 
         
     }
